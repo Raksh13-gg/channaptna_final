@@ -39,6 +39,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ── Serve HTML Frontend as static files ──────────────────────────────────────
+_FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.isdir(_FRONTEND_DIR):
+    app.mount("/frontend", StaticFiles(directory=_FRONTEND_DIR), name="frontend-static")
+
+    @app.get("/ui", include_in_schema=False)
+    @app.get("/ui/", include_in_schema=False)
+    def serve_frontend():
+        """Redirect to the HTML frontend served from /frontend/index.html"""
+        index_path = os.path.join(_FRONTEND_DIR, "index.html")
+        if os.path.exists(index_path):
+            return FileResponse(index_path, media_type="text/html")
+        return RedirectResponse(url="/docs")
+
 
 
 # -------------------------------------------------------------

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Channapatna Toys | AI-Based Fair Pricing Platform</title>
+  <meta name="description" content="AI-powered fair pricing and market intelligence platform for GI-tagged Channapatna wooden toys. Calculate fair artisan prices and predict marketplace values." />
+  <meta name="theme-color" content="#0B4B35" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js for the cost breakdown bar chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="frontend.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP NAVIGATION HEADER
+       ============================================================ -->
+  <header class="ch-navbar" id="ch-navbar">
+    <div class="ch-navbar-inner">
+      <div class="ch-nav-brand-row">
+        <a href="#" class="ch-brand" id="logo-home-link" aria-label="Channapatna Toys Home">
+          <img src="assets/logo_channapatna.png" class="ch-brand-logo" alt="Channapatna Toys Logo" onerror="this.style.display='none'" />
+          <span class="ch-brand-name">Channapatna Toys</span>
+        </a>
+        <div class="ch-brand-tag" aria-label="Channapatna Studio">
+          <span class="ch-status-dot" id="api-status-dot"></span>
+          <span id="api-status-text">Channapatna Studio</span>
+        </div>
+        <!-- Mobile hamburger -->
+        <button class="ch-hamburger ch-hamburger-mobile" id="hamburger-mobile" aria-label="Open navigation menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="ch-nav-right">
+        <nav class="ch-nav-links" id="ch-nav-links" aria-label="Main navigation">
+          <a href="#" class="ch-nav-link" data-view="home">Home</a>
+          <a href="#" class="ch-nav-link" data-view="market">Market Price</a>
+          <a href="#" class="ch-nav-link" data-view="fair">Fair Price</a>
+          <a href="#" class="ch-nav-link" data-view="insights">Insights</a>
+          <a href="#" class="ch-nav-link" data-view="about">About</a>
+        </nav>
+        <button class="ch-hamburger ch-hamburger-desktop" id="hamburger-desktop" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="ch-mobile-drawer" id="ch-mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="ch-mobile-drawer-inner">
+      <button class="ch-drawer-close" id="ch-drawer-close" aria-label="Close menu">✕</button>
+      <nav class="ch-drawer-nav">
+        <a href="#" class="ch-drawer-link" data-view="home">🏠 Home</a>
+        <a href="#" class="ch-drawer-link" data-view="market">📈 Market Price</a>
+        <a href="#" class="ch-drawer-link" data-view="fair">🛡️ Fair Price</a>
+        <a href="#" class="ch-drawer-link" data-view="insights">🔬 Insights</a>
+        <a href="#" class="ch-drawer-link" data-view="about">🪵 About</a>
+      </nav>
+    </div>
+  </div>
+  <div class="ch-drawer-overlay" id="ch-drawer-overlay"></div>
+
+  <!-- ============================================================
+       MAIN CONTENT — Views are shown/hidden via JS
+       ============================================================ -->
+  <main id="app-main">
+
+    <!-- =========================================================
+         VIEW: HOME
+         ========================================================= -->
+    <section id="view-home" class="view-section active">
+      <div class="ch-home-scene" id="ch-home-scene">
+        <div class="ch-home-center">
+          <div class="ch-home-heading-block">
+            <h1 class="ch-home-title">AI-Powered Fair Pricing<br/>for Channapatna Artisans</h1>
+            <p class="ch-home-subtitle">Know your market value. Protect your craft. Sustain your livelihood.</p>
+          </div>
+          <div class="ch-cards-row">
+
+            <!-- Card 1: Get Market Price -->
+            <div class="ch-card-item" id="card-get-market-price">
+              <a href="#" class="ch-card-anchor" data-view="market" aria-label="Get Market Price">
+                <div class="ch-card-top">
+                  <div class="ch-card-img-stack" role="img" aria-label="Channapatna Stacking Toy"></div>
+                </div>
+                <div class="ch-card-bottom ch-bottom-green">
+                  <h2 class="ch-card-title">Get Market<br/>Price</h2>
+                  <div class="ch-circle-arrow" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+              <div class="ch-help-anchor" tabindex="0" aria-label="Market Price explanation">
+                <div class="ch-help-circle" id="help-btn-market" role="button" tabindex="0" aria-label="Market Price explanation">?</div>
+                <div class="ch-tooltip-card" id="tooltip-market" role="tooltip">
+                  <p class="ch-tooltip-text">See how much your toy could sell for in the marketplace, based on the ML model's price estimate.</p>
+                  <div class="ch-tooltip-tail"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Know Your Fair Price -->
+            <div class="ch-card-item" id="card-know-fair-price">
+              <a href="#" class="ch-card-anchor" data-view="fair" aria-label="Know Your Fair Price">
+                <div class="ch-card-top">
+                  <div class="ch-card-img-elephant" role="img" aria-label="Channapatna Painted Elephant"></div>
+                </div>
+                <div class="ch-card-bottom ch-bottom-terracotta">
+                  <h2 class="ch-card-title">Know Your<br/>Fair Price</h2>
+                  <div class="ch-circle-arrow" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+              <div class="ch-help-anchor" tabindex="0" aria-label="Fair Price explanation">
+                <div class="ch-help-circle" id="help-btn-fair" role="button" tabindex="0" aria-label="Fair Price explanation">?</div>
+                <div class="ch-tooltip-card" id="tooltip-fair" role="tooltip">
+                  <p class="ch-tooltip-text">Find a fair price that covers your materials, making time, and a reasonable profit.</p>
+                  <div class="ch-tooltip-tail"></div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- end cards-row -->
+
+          <!-- Trust Bar -->
+          <div class="ch-trust-bar">
+            <span class="ch-trust-item">🤝 Supporting Artisans</span>
+            <span class="ch-trust-sep">·</span>
+            <span class="ch-trust-item">🌱 Sustainable Livelihoods</span>
+            <span class="ch-trust-sep">·</span>
+            <span class="ch-trust-item">📊 Data-Driven Market Intelligence</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW: FAIR PRICE
+         ========================================================= -->
+    <section id="view-fair" class="view-section workspace-page-container" hidden>
+      <button class="back-btn" id="back-from-fair" aria-label="Go back to home">← Back to Home</button>
+
+      <div class="page-header-card fair">
+        <div class="page-header-badge green">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5c0 2.21 1.79 4 4 4 2.27 0 4.19-1.28 6.5-2.5 2.12-1.12 4.18-1.5 5.5-2.5-1 0-2 .25-3 .25z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="page-title">Know Your Fair Price</h1>
+          <p class="page-subtitle">Calculate a fair and sustainable price for artisans based on material cost, labour, and overheads.</p>
+        </div>
+      </div>
+
+      <!-- Error banner -->
+      <div class="error-banner" id="fair-error-banner" hidden role="alert" aria-live="assertive"></div>
+
+      <!-- Result anchor -->
+      <div id="fair-result-anchor"></div>
+
+      <!-- Result card (shown after API call) -->
+      <div class="results-card-container fair" id="fair-result-card" hidden>
+        <div class="result-tagline" style="color:#0B4B35;">🛡️ Recommended Fair Artisan Selling Price</div>
+        <div class="price-headline-figure" id="fair-price-figure" style="color:#073F2D;"></div>
+        <div class="result-meta-text" id="fair-meta-text"></div>
+        <div class="three-range-grid" id="fair-range-grid"></div>
+      </div>
+
+      <!-- Cost Sheet (shown after API call) -->
+      <div class="cost-sheet-card" id="fair-cost-sheet" hidden>
+        <h3>🧾 Transparent Itemized Cost Sheet</h3>
+        <p>Complete cost accounting verifying materials, lathe turning hours, tools, and living margin.</p>
+        <div class="cost-sheet-layout">
+          <div class="cost-table-wrap">
+            <table class="cost-table" id="fair-cost-table">
+              <thead>
+                <tr><th>Cost Component</th><th>Calculation</th><th>Amount (₹)</th></tr>
+              </thead>
+              <tbody id="fair-cost-tbody"></tbody>
+            </table>
+          </div>
+          <div class="cost-chart-wrap">
+            <p class="chart-caption" id="fair-chart-caption"></p>
+            <canvas id="fair-cost-chart" height="320" aria-label="Cost breakdown bar chart" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="market-stepper fair-stepper" id="fair-stepper">
+        <div class="market-step-item active" id="fair-step-1-indicator"><span class="market-step-number">1</span><span>Product &amp; Dimensions</span></div>
+        <div class="market-step-item" id="fair-step-2-indicator"><span class="market-step-number">2</span><span>Artisan Details</span></div>
+      </div>
+
+      <!-- Step 1: Product Details -->
+      <div class="form-card" id="fair-form-step1">
+        <div class="form-section-title">Step 1 — Product Details &amp; Dimensions</div>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label for="f-name">Toy Name or Description</label>
+            <input type="text" id="f-name" placeholder="e.g., 7-Ring Stacking Pyramid" autocomplete="off" />
+          </div>
+          <div class="form-field full-width">
+            <label for="f-mat">Primary Wood Species <span class="req">*</span></label>
+            <select id="f-mat">
+              <option value="">Select wood species</option>
+              <option value="hale">hale wood (Wrightia tinctoria)</option>
+              <option value="solid wood">solid wood</option>
+              <option value="pine">pine</option>
+              <option value="mango wood">mango wood</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="f-len">Toy Length (cm) <span class="req">*</span></label>
+            <input type="number" id="f-len" min="0.5" max="200" step="0.5" placeholder="e.g., 10" />
+          </div>
+          <div class="form-field">
+            <label for="f-wid">Toy Width (cm) <span class="req">*</span></label>
+            <input type="number" id="f-wid" min="0.5" max="200" step="0.5" placeholder="e.g., 10" />
+          </div>
+          <div class="form-field">
+            <label for="f-hgt">Toy Height (cm) <span class="req">*</span></label>
+            <input type="number" id="f-hgt" min="0.5" max="200" step="0.5" placeholder="e.g., 15" />
+          </div>
+          <div class="form-field">
+            <label for="f-wt">Weight (grams) <span class="req">*</span></label>
+            <input type="number" id="f-wt" min="1" max="10000" step="10" placeholder="e.g., 180" />
+          </div>
+        </div>
+        <button class="btn-primary btn-green" id="fair-next-btn" aria-label="Proceed to Step 2">Next →</button>
+      </div>
+
+      <!-- Step 2: Artisan Details -->
+      <div class="form-card" id="fair-form-step2" hidden>
+        <div class="form-section-title">Step 2 — Artisan Labour &amp; Additional Details</div>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label for="f-hours">Manual Lathe &amp; Carving Time (Hours) <span class="req">*</span></label>
+            <input type="number" id="f-hours" min="0.1" max="50" step="0.25" placeholder="e.g., 1.5" />
+            <small class="form-hint">Time required for turning, lacquer application, and screw-pine leaf buffing.</small>
+          </div>
+          <div class="form-field full-width">
+            <label for="f-wage">Artisan Living Wage Rate (₹ / Hour) <span class="req">*</span></label>
+            <input type="number" id="f-wage" min="50" max="2000" step="10" placeholder="e.g., 140" value="140" />
+            <small class="form-hint">Karnataka standard fair living wage baseline: ₹140/hour.</small>
+          </div>
+          <div class="form-field full-width">
+            <label for="f-margin">Fair Cluster Profit Margin (%): <span class="slider-val" id="f-margin-val">25%</span></label>
+            <input type="range" id="f-margin" class="ch-slider" min="5" max="60" step="5" value="25" aria-valuemin="5" aria-valuemax="60" aria-valuenow="25" />
+            <div class="slider-track-labels"><span>5%</span><span>60%</span></div>
+          </div>
+          <details class="form-field full-width optional-details">
+            <summary>Additional Details (Optional)</summary>
+            <div style="margin-top:14px;">
+              <label for="f-qty">Pieces in Toy Set</label>
+              <input type="number" id="f-qty" min="1" max="50" step="1" value="1" />
+            </div>
+          </details>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" id="fair-back-btn" aria-label="Go back to Step 1">← Back</button>
+          <button class="btn-primary btn-green" id="fair-submit-btn" aria-label="Calculate Fair Price">
+            <span class="btn-text">Calculate Fair Price</span>
+            <span class="btn-spinner" hidden aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-icon">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW: MARKET PRICE
+         ========================================================= -->
+    <section id="view-market" class="view-section workspace-page-container" hidden>
+      <button class="back-btn" id="back-from-market" aria-label="Go back to home">← Back to Home</button>
+
+      <div class="page-header-card market">
+        <div class="page-header-badge red">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="page-title">Know Your Market Price</h1>
+          <p class="page-subtitle">Estimate the expected marketplace selling price of your Channapatna toy using AI.</p>
+        </div>
+      </div>
+
+      <!-- Error banner -->
+      <div class="error-banner" id="market-error-banner" hidden role="alert" aria-live="assertive"></div>
+
+      <!-- Result anchor -->
+      <div id="market-result-anchor"></div>
+
+      <!-- Result card -->
+      <div class="results-card-container market" id="market-result-card" hidden>
+        <div class="result-tagline" style="color:#982323;">📈 Predicted Marketplace Selling Price</div>
+        <div class="market-price-result" id="market-price-figure"></div>
+        <div class="three-range-grid" id="market-range-grid"></div>
+        <button class="btn-outline" id="market-make-another" style="margin-top:24px;" aria-label="Make another prediction">Make Another Prediction</button>
+      </div>
+
+      <!-- Stepper -->
+      <div class="market-stepper" id="market-stepper">
+        <div class="market-step-item active" id="market-step-1-indicator"><span class="market-step-number">1</span><span>Basic Information</span></div>
+        <div class="market-step-item" id="market-step-2-indicator"><span class="market-step-number">2</span><span>Toy Dimensions</span></div>
+        <div class="market-step-item" id="market-step-3-indicator"><span class="market-step-number">3</span><span>Additional Details</span></div>
+      </div>
+
+      <!-- Step 1: Basic Information -->
+      <div class="form-card" id="market-form-step1">
+        <div class="form-section-title">Step 1 — Basic Information</div>
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <label for="m-name">Toy Name or Description <span class="req">*</span></label>
+            <input type="text" id="m-name" placeholder="e.g., 7-Ring Stacking Pyramid" autocomplete="off" />
+          </div>
+          <div class="form-field full-width">
+            <label for="m-mrp">Reference Catalog MRP (₹) <span class="req">*</span></label>
+            <input type="number" id="m-mrp" min="1" max="50000" step="10" placeholder="e.g., 550" />
+          </div>
+          <div class="form-field full-width">
+            <label for="m-cat">Toy Category <span class="req">*</span></label>
+            <select id="m-cat">
+              <option value="">Select a toy category</option>
+              <option value="stacking toy">Stacking Toy</option>
+              <option value="baby rattle">Baby Rattle</option>
+              <option value="wooden toy">Wooden Toy</option>
+              <option value="educational toy">Educational Toy</option>
+              <option value="spinning top">Spinning Top</option>
+              <option value="rocking toy">Rocking Toy</option>
+              <option value="puzzle">Puzzle</option>
+              <option value="peg dolls">Peg Dolls</option>
+            </select>
+          </div>
+          <div class="form-field full-width">
+            <label for="m-mat">Primary Material <span class="req">*</span></label>
+            <select id="m-mat">
+              <option value="">Select a material</option>
+              <option value="hale wood">Hale Wood (Authentic GI)</option>
+              <option value="solid wood">Solid Wood</option>
+              <option value="wood">Wood</option>
+              <option value="pine">Pine</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary btn-red" id="market-step1-next" aria-label="Proceed to Step 2">Next →</button>
+      </div>
+
+      <!-- Step 2: Dimensions -->
+      <div class="form-card" id="market-form-step2" hidden>
+        <div class="form-section-title">Step 2 — Toy Dimensions</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="m-len">Toy Length (cm) <span class="req">*</span></label>
+            <input type="number" id="m-len" min="0.5" max="200" step="0.5" placeholder="e.g., 10 cm" />
+          </div>
+          <div class="form-field">
+            <label for="m-wid">Toy Width (cm) <span class="req">*</span></label>
+            <input type="number" id="m-wid" min="0.5" max="200" step="0.5" placeholder="e.g., 10 cm" />
+          </div>
+          <div class="form-field">
+            <label for="m-hgt">Toy Height (cm) <span class="req">*</span></label>
+            <input type="number" id="m-hgt" min="0.5" max="200" step="0.5" placeholder="e.g., 16 cm" />
+          </div>
+          <div class="form-field">
+            <label for="m-wt">Weight (grams) <span class="req">*</span></label>
+            <input type="number" id="m-wt" min="1" max="10000" step="10" placeholder="e.g., 220 grams" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" id="market-step2-back" aria-label="Go back to Step 1">← Back</button>
+          <button class="btn-primary btn-red" id="market-step2-next" aria-label="Proceed to Step 3">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Additional Details -->
+      <div class="form-card" id="market-form-step3" hidden>
+        <div class="form-section-title">Step 3 — Additional Details</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="m-qty">Pieces in Toy Set</label>
+            <input type="number" id="m-qty" min="1" max="50" step="1" value="1" placeholder="e.g., 1" />
+          </div>
+          <div class="form-field full-width">
+            <label for="m-age">Target Child Age (Months): <span class="slider-val" id="m-age-val">12 months</span></label>
+            <input type="range" id="m-age" class="ch-slider" min="3" max="96" step="3" value="12" aria-valuemin="3" aria-valuemax="96" aria-valuenow="12" />
+            <div class="slider-track-labels"><span>3 months</span><span>96 months</span></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" id="market-step3-back" aria-label="Go back to Step 2">← Back</button>
+          <button class="btn-primary btn-red" id="market-submit-btn" aria-label="Get Market Price">
+            <span class="btn-text">Get Market Price</span>
+            <span class="btn-spinner" hidden aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-icon">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW: ABOUT
+         ========================================================= -->
+    <section id="view-about" class="view-section workspace-page-container" hidden>
+      <button class="back-btn" id="back-from-about" aria-label="Go back to home">← Back to Home</button>
+      <div class="unified-form-card">
+        <h2 class="form-section-title">About Channapatna Toys</h2>
+
+        <!-- About banner image -->
+        <div class="about-banner-wrap">
+          <img
+            src="assets/about_banner.png"
+            alt="Colorful traditional Channapatna wooden toys — stacking rings, elephants, spinning tops and peg dolls"
+            class="about-banner-img"
+            loading="lazy"
+          />
+          <div class="about-banner-caption">🪵 Gombegala Ooru — The Toy City of Karnataka</div>
+        </div>
+
+        <div class="info-prose">
+          <p>Known as <em>Gombegala Ooru</em> (Toy City) of Karnataka, Channapatna has a 200-year-old heritage of wooden toy making. Awarded Geographical Indication (GI Tag No. 18), these toys are crafted exclusively from sustainably harvested <strong>Hale Mara</strong> (<em>Wrightia tinctoria</em>) and colored using 100% natural vegetable lacquers (turmeric, kumkum, indigo).</p>
+          <p>This AI-Powered Platform was created to bridge traditional artisan craft economics with modern marketplace intelligence, preventing intermediary wage depreciation and protecting 3,000+ craft families across Karnataka.</p>
+          <div class="about-stats">
+            <div class="about-stat-item">
+              <span class="about-stat-num">200+</span>
+              <span class="about-stat-label">Years of Heritage</span>
+            </div>
+            <div class="about-stat-item">
+              <span class="about-stat-num">3,000+</span>
+              <span class="about-stat-label">Artisan Families</span>
+            </div>
+            <div class="about-stat-item">
+              <span class="about-stat-num">GI #18</span>
+              <span class="about-stat-label">Protected Craft</span>
+            </div>
+            <div class="about-stat-item">
+              <span class="about-stat-num">100%</span>
+              <span class="about-stat-label">Natural Lacquers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW: INSIGHTS
+         ========================================================= -->
+    <section id="view-insights" class="view-section workspace-page-container" hidden>
+      <button class="back-btn" id="back-from-insights" aria-label="Go back to home">← Back to Home</button>
+      <div class="unified-form-card">
+        <h2 class="form-section-title">ML Model Insights &amp; Benchmarks</h2>
+        <p class="info-prose-sm">Our production Price-to-MRP Random Forest Regressor leverages physical geometry and TF-IDF text features.</p>
+        <div class="three-range-grid insights-grid" id="insights-metrics-grid">
+          <div class="range-box-item" style="text-align:center;">
+            <div class="range-box-label">R² CORRELATION</div>
+            <div class="range-box-val" style="color:#0B4B35;" id="insights-r2">—</div>
+          </div>
+          <div class="range-box-item" style="text-align:center;">
+            <div class="range-box-label">MEAN ABSOLUTE ERROR</div>
+            <div class="range-box-val" style="color:#982323;" id="insights-mae">—</div>
+          </div>
+          <div class="range-box-item" style="text-align:center;">
+            <div class="range-box-label">MAPE (%)</div>
+            <div class="range-box-val" style="color:#C07028;" id="insights-mape">—</div>
+          </div>
+          <div class="range-box-item" style="text-align:center;">
+            <div class="range-box-label">FEATURES USED</div>
+            <div class="range-box-val" style="color:#202820;" id="insights-features">—</div>
+          </div>
+        </div>
+        <div class="insights-vs-block" id="insights-comparison">
+          <h3 class="form-section-title" style="border:none;margin-top:32px;">vs Baseline XGBoost Model</h3>
+          <div class="three-range-grid">
+            <div class="range-box-item">
+              <div class="range-box-label">MAE REDUCTION</div>
+              <div class="range-box-val" style="color:#0B4B35;" id="insights-mae-red">—</div>
+            </div>
+            <div class="range-box-item">
+              <div class="range-box-label">RMSE REDUCTION</div>
+              <div class="range-box-val" style="color:#0B4B35;" id="insights-rmse-red">—</div>
+            </div>
+            <div class="range-box-item">
+              <div class="range-box-label">BASELINE R²</div>
+              <div class="range-box-val" style="color:#982323;" id="insights-base-r2">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- Toast notification -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,7 +1,35 @@
-node_modules/
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
 .env
+.env.*
+
+# Streamlit config (local only)
+.streamlit/
+
+# Node
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.log
+
+# Temp / raw data folders
 data/raw/
 data/cleaned/
-*.log
-__pycache__/
+
+# Excel lock files
 ~$*
