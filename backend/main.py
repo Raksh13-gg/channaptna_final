@@ -47,11 +47,8 @@ if os.path.isdir(_FRONTEND_DIR):
     @app.get("/ui", include_in_schema=False)
     @app.get("/ui/", include_in_schema=False)
     def serve_frontend():
-        """Redirect to the HTML frontend served from /frontend/index.html"""
-        index_path = os.path.join(_FRONTEND_DIR, "index.html")
-        if os.path.exists(index_path):
-            return FileResponse(index_path, media_type="text/html")
-        return RedirectResponse(url="/docs")
+        """Redirect to the canonical frontend URL."""
+        return RedirectResponse(url="/frontend/index.html", status_code=307)
 
 
 
